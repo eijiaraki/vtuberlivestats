@@ -8,7 +8,7 @@ from urllib.request import urlopen
 
 class LivelistSpider(scrapy.Spider):
     name = 'livelist'
-    youtube_key = 'AIzaSyAqhRp7T4VfhuUt_Gngz9HWZRSTu9BGS4Q'
+    youtube_key = '--yourkey--'
     allowed_domains = ['virtual-youtuber.userlocal.jp']
     start_urls = ['http://virtual-youtuber.userlocal.jp/lives']
 
