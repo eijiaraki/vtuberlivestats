@@ -7,26 +7,29 @@
 import json
 import argparse
 import time
-import pkgutil
+import os
 from datetime import datetime
+from pytz import timezone
 from pprint import pprint
 from oauth2client import file, client, tools 
 from apiclient.discovery import build
 from httplib2 import Http
 
 class VtuberlivePipeline(object):
-    key_file = './vtuberlive/client_secret.json'
-    credential_file = './vtuberlive/credential.json'
+    key_file = 'client_secret.json'
+    credential_file = 'credential.json'
     worksheet_key = "1q2u90mH5Oz2cqDr5W0ItX0sl6YfML0YvJMKR2Tr3CBI"
     rows = [] #list to be appended to Gsheet
 
     def open_spider(self, spider):
         
         # Setup the Sheets API
-        store = file.Storage(self.credential_file)
+        path = os.path.join(os.path.dirname(__file__), self.credential_file)
+        store = file.Storage(path)
         creds = store.get()
         if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(self.key_file, 'https://www.googleapis.com/auth/spreadsheets')
+            path = os.path.join(os.path.dirname(__file__), self.key_file)
+            flow = client.flow_from_clientsecrets(path, 'https://www.googleapis.com/auth/spreadsheets')
             args = '--auth_host_name localhost --logging_level INFO --noauth_local_webserver'
             flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args(args.split())
             creds = tools.run_flow(flow, store, flags)
@@ -54,8 +57,8 @@ class VtuberlivePipeline(object):
         print(response)
 
     def process_item(self, item, spider):
-        now = datetime.now()
-        duration = int((int(datetime.utcnow().timestamp()) - int(datetime.strptime(item['actualStartTime'], "%Y-%m-%dT%H:%M:%S.%f%z").strftime("%s"))) / 60)
+        duration = int((int(datetime.utcnow().timestamp()) - int(datetime.strptime(item['actualStartTime'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%s"))) / 60)
+        now = datetime.now(tz=timezone('Asia/Tokyo'))
         self.rows.append([
             now.strftime("%Y-%m-%d %H:%M"), 
             item['title'],
