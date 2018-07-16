@@ -7,6 +7,7 @@
 import json
 import argparse
 import time
+import pkgutil
 from datetime import datetime
 from pprint import pprint
 from oauth2client import file, client, tools 
@@ -14,8 +15,8 @@ from apiclient.discovery import build
 from httplib2 import Http
 
 class VtuberlivePipeline(object):
-    key_file = 'client_secret.json'
-    credential_file = './credential.json'
+    key_file = './vtuberlive/client_secret.json'
+    credential_file = './vtuberlive/credential.json'
     worksheet_key = "1q2u90mH5Oz2cqDr5W0ItX0sl6YfML0YvJMKR2Tr3CBI"
     rows = [] #list to be appended to Gsheet
 
@@ -25,7 +26,7 @@ class VtuberlivePipeline(object):
         store = file.Storage(self.credential_file)
         creds = store.get()
         if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets('client_secret.json', 'https://www.googleapis.com/auth/spreadsheets')
+            flow = client.flow_from_clientsecrets(self.key_file, 'https://www.googleapis.com/auth/spreadsheets')
             args = '--auth_host_name localhost --logging_level INFO --noauth_local_webserver'
             flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args(args.split())
             creds = tools.run_flow(flow, store, flags)

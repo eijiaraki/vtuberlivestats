@@ -7,7 +7,7 @@ setup(
     version      = '1.0',
     packages     = find_packages(),
     package_data = {
-        'vtuberlive' : ['client_secret.json']
+        'vtuberlive' : ['client_secret.json', 'credential.json']
         },
     entry_points = {'scrapy': ['settings = vtuberlive.settings']},
 )
